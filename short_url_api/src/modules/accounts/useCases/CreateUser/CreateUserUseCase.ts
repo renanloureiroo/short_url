@@ -26,7 +26,7 @@ class CreateUserUseCase {
       data: {
         name,
         email,
-        password,
+        password: passwordHashed,
       },
     })
 
