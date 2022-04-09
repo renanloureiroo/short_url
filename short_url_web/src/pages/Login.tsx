@@ -1,14 +1,30 @@
-import { Button, Flex, Input, Stack } from "@chakra-ui/react";
-import { FormEvent, useState } from "react";
+import { Button, Flex, Stack } from "@chakra-ui/react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { FormEvent } from "react";
+import { useForm } from "react-hook-form";
+import { HiOutlineLink } from "react-icons/hi";
 import Lottie from "react-lottie";
+import * as Yup from "yup";
+import { Input } from "../components/Form/Input";
+import { InputPassword } from "../components/Form/InputPassword";
 import LinkAnimation from "../public/images/linkAnimation.json";
 import { api } from "../services/api";
 
-export const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const schema = Yup.object().shape({
+  email: Yup.string().email().required(),
+  password: Yup.string().required(),
+});
 
-  const handleSubmit = async (e: FormEvent) => {
+export const Login = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     console.log(email, password);
 
@@ -43,28 +59,19 @@ export const Login = () => {
         />
       </Flex>
       <Flex flex="2" alignItems="center" justifyContent="center" padding=" 0 2">
-        <Stack flex="1" gap="4" as="form" maxW="96" onSubmit={handleSubmit}>
-          <Input
-            placeholder="E-mail"
-            type="email"
-            size="lg"
-            focusBorderColor="purple.500"
-            color="gray.100"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+        <Stack flex="1" spacing={4} as="form" maxW="96" align="center">
+          <HiOutlineLink size={72} color="#E2E8F0" />
 
-          <Input
-            placeholder="Senha"
-            type="password"
-            size="lg"
-            focusBorderColor="purple.500"
-            color="gray.100"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <Input />
 
-          <Button title="Entrar" colorScheme="purple" type="submit">
+          <InputPassword />
+
+          <Button
+            title="Entrar"
+            colorScheme="purple"
+            type="submit"
+            width="100%"
+          >
             Entrar
           </Button>
         </Stack>
