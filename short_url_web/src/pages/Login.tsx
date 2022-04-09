@@ -1,18 +1,23 @@
 import { Button, Flex, Stack } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FormEvent } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { HiOutlineLink } from "react-icons/hi";
 import Lottie from "react-lottie";
 import * as Yup from "yup";
 import { Input } from "../components/Form/Input";
 import { InputPassword } from "../components/Form/InputPassword";
 import LinkAnimation from "../public/images/linkAnimation.json";
-import { api } from "../services/api";
+
+interface FormData {
+  email: string;
+  password: string;
+}
 
 const schema = Yup.object().shape({
-  email: Yup.string().email().required(),
-  password: Yup.string().required(),
+  email: Yup.string()
+    .email("E-mail inválido!")
+    .required("E-mail é obrigatório!"),
+  password: Yup.string().required("Senha é obrigatória!"),
 });
 
 export const Login = () => {
@@ -20,24 +25,19 @@ export const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<FormData>({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    console.log(email, password);
+  const handleSignIn: SubmitHandler<FormData> = async (data) => {
+    console.log(data);
+    // try {
+    //   const response = await api.post("/accounts/authenticate", {});
 
-    try {
-      const response = await api.post("/accounts/authenticate", {
-        email,
-        password,
-      });
-
-      console.log(response.data);
-    } catch (err) {
-      console.log(err);
-    }
+    //   console.log(response.data);
+    // } catch (err) {
+    //   console.log(err);
+    // }
   };
 
   return (
@@ -59,12 +59,27 @@ export const Login = () => {
         />
       </Flex>
       <Flex flex="2" alignItems="center" justifyContent="center" padding=" 0 2">
-        <Stack flex="1" spacing={4} as="form" maxW="96" align="center">
+        <Stack
+          flex="1"
+          spacing={4}
+          as="form"
+          maxW="96"
+          align="center"
+          onSubmit={handleSubmit(handleSignIn)}
+        >
           <HiOutlineLink size={72} color="#E2E8F0" />
 
-          <Input />
+          <Input
+            placeholder="E-mail"
+            {...register("email")}
+            error={errors.email}
+          />
 
-          <InputPassword />
+          <InputPassword
+            placeholder="Senha"
+            {...register("password")}
+            error={errors.password}
+          />
 
           <Button
             title="Entrar"
