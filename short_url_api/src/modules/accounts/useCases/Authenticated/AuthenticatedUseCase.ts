@@ -42,6 +42,7 @@ class AuthenticatedUseCase {
     const response = {
       token,
       user: {
+        id: user.id,
         name: user.name,
         email: user.email,
       },

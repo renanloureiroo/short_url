@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { api } from "../services/api";
 
 type User = {
@@ -6,6 +6,11 @@ type User = {
   name: string;
   email: string;
 };
+
+interface IResponse {
+  token: string;
+  user: User;
+}
 
 interface AuthContextProps {
   user: User | null;
@@ -22,21 +27,67 @@ export const AuthContext = createContext({} as AuthContextProps);
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+
+  const key = "@shortUrl:token";
+
+  const rehydrate = () => {
+    const token = localStorage.getItem("@shortUrl:token");
+    if (token) {
+      const tokenFormatted = JSON.parse(token);
+      setToken(tokenFormatted);
+    }
+  };
 
   const signIn = async (email: string, password: string) => {
     try {
-      const response = await api.post("/accounts/authenticate", {
+      const { data } = await api.post<IResponse>("/auth/me", {
         email,
         password,
       });
+      console.log(data);
 
-      console.log(response.data);
+      setUser({
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+      });
+
+      setToken(data.token);
+
+      localStorage.setItem(key, JSON.stringify(data.token));
     } catch (err) {
       console.log(err);
     }
   };
-  const signOut = () => {};
-  const signUp = async (name: string, email: string, password: string) => {};
+  const signOut = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem(key);
+  };
+  const signUp = async (name: string, email: string, password: string) => {
+    try {
+      await api.post("/auth/signup", {
+        name,
+        email,
+        password,
+      });
+
+      await signIn(email, password);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    rehydrate();
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    }
+  }, [token]);
 
   return (
     <AuthContext.Provider value={{ user, signIn, signOut, signUp }}>

@@ -5,7 +5,7 @@ import Lottie from "react-lottie";
 import LinkAnimation from "../assets/images/linkAnimation.json";
 import { Register } from "../components/Register";
 import { SignIn } from "../components/SigIn";
-import { api } from "../services/api";
+import { useAuth } from "../hooks/useAuth";
 
 interface LoginData {
   email: string;
@@ -21,16 +21,9 @@ interface RegisterData {
 export const Login = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const handleSignIn: SubmitHandler<LoginData> = useCallback(async (data) => {
-    console.log(data);
-    try {
-      const response = await api.post("/accounts/authenticate", {});
+  const { signIn } = useAuth();
 
-      console.log(response.data);
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
+  const handleSignIn = () => {};
 
   const handleRegister: SubmitHandler<RegisterData> = useCallback(
     async (data) => {
@@ -65,7 +58,7 @@ export const Login = () => {
         {!isOpen ? (
           <Fade in={!isOpen}>
             <Box padding="8" bg="gray.800" borderRadius="2xl">
-              <SignIn handleSignIn={handleSignIn} />
+              <SignIn />
 
               <Text color="gray.300" mt="4">
                 Não tem uma conta?{" "}

@@ -2,15 +2,12 @@ import { Button, Stack } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
+import { useAuth } from "../hooks/useAuth";
 import { Input } from "./Form/Input";
 import { InputPassword } from "./Form/InputPassword";
 interface FormData {
   email: string;
   password: string;
-}
-
-interface SignInProps {
-  handleSignIn: (data: FormData) => Promise<void>;
 }
 
 const schema = Yup.object().shape({
@@ -20,7 +17,12 @@ const schema = Yup.object().shape({
   password: Yup.string().required("Senha é obrigatória!"),
 });
 
-export const SignIn = ({ handleSignIn }: SignInProps) => {
+export const SignIn = () => {
+  const { signIn } = useAuth();
+
+  const handleSignIn = ({ email, password }: FormData) => {
+    signIn(email, password);
+  };
   const {
     register,
     handleSubmit,
