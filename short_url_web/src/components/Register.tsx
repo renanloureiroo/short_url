@@ -1,15 +1,21 @@
-import { Button, Stack } from "@chakra-ui/react";
+import { Button, Flex, IconButton, Stack } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { BiArrowBack } from "react-icons/bi";
 import { RiUserAddFill } from "react-icons/ri";
 import * as Yup from "yup";
-import { Input } from "../Form/Input";
-import { InputPassword } from "../Form/InputPassword";
+import { Input } from "./Form/Input";
+import { InputPassword } from "./Form/InputPassword";
 
-interface RegisterForm {
+interface RegisterData {
   email: string;
   password: string;
   passwordConfirm: string;
+}
+
+interface RegisterProps {
+  handleRegister: (data: RegisterData) => Promise<void>;
+  goBack: () => void;
 }
 
 const schema = Yup.object().shape({
@@ -25,18 +31,14 @@ const schema = Yup.object().shape({
   ),
 });
 
-export const Register = () => {
+export const Register = ({ handleRegister, goBack }: RegisterProps) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterForm>({
+  } = useForm<RegisterData>({
     resolver: yupResolver(schema),
   });
-
-  const handleRegister: SubmitHandler<RegisterForm> = (data) => {
-    console.log(data);
-  };
 
   return (
     <Stack
@@ -57,9 +59,23 @@ export const Register = () => {
         error={errors.password}
       />
 
-      <Button title="Entrar" colorScheme="purple" type="submit" width="100%">
-        Entrar
-      </Button>
+      <InputPassword
+        placeholder="Confirmar senha"
+        {...register("password")}
+        error={errors.password}
+      />
+      <Flex w="100%">
+        <IconButton
+          aria-label="Voltar"
+          fontSize={22}
+          mr={4}
+          icon={<BiArrowBack />}
+          onClick={goBack}
+        />
+        <Button title="Entrar" colorScheme="purple" type="submit" width="100%">
+          Criar
+        </Button>
+      </Flex>
     </Stack>
   );
 };

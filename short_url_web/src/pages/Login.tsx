@@ -1,47 +1,50 @@
-import { Button, Flex, Stack } from "@chakra-ui/react";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { HiOutlineLink } from "react-icons/hi";
+import { Box, Button, Fade, Flex, Text, useDisclosure } from "@chakra-ui/react";
+import { useCallback } from "react";
+import { SubmitHandler } from "react-hook-form";
 import Lottie from "react-lottie";
-import * as Yup from "yup";
-import { Input } from "../components/Form/Input";
-import { InputPassword } from "../components/Form/InputPassword";
-import LinkAnimation from "../public/images/linkAnimation.json";
+import LinkAnimation from "../assets/images/linkAnimation.json";
+import { Register } from "../components/Register";
+import { SignIn } from "../components/SigIn";
+import { api } from "../services/api";
 
-interface FormData {
+interface LoginData {
   email: string;
   password: string;
 }
 
-const schema = Yup.object().shape({
-  email: Yup.string()
-    .email("E-mail inválido!")
-    .required("E-mail é obrigatório!"),
-  password: Yup.string().required("Senha é obrigatória!"),
-});
+interface RegisterData {
+  email: string;
+  password: string;
+  passwordConfirm: string;
+}
 
 export const Login = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
-    resolver: yupResolver(schema),
-  });
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const handleSignIn: SubmitHandler<FormData> = async (data) => {
+  const handleSignIn: SubmitHandler<LoginData> = useCallback(async (data) => {
     console.log(data);
-    // try {
-    //   const response = await api.post("/accounts/authenticate", {});
+    try {
+      const response = await api.post("/accounts/authenticate", {});
 
-    //   console.log(response.data);
-    // } catch (err) {
-    //   console.log(err);
-    // }
-  };
+      console.log(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  const handleRegister: SubmitHandler<RegisterData> = useCallback(
+    async (data) => {
+      console.log(data);
+    },
+    []
+  );
+
+  const handleToggle = useCallback(() => {
+    onClose();
+  }, []);
 
   return (
-    <Flex minHeight="100vh" bgColor="gray.700" width="100%">
+    <Flex minHeight="100vh" bgColor="gray.900" width="100%">
       <Flex
         flex="1"
         bgColor="purple.600"
@@ -59,37 +62,34 @@ export const Login = () => {
         />
       </Flex>
       <Flex flex="2" alignItems="center" justifyContent="center" padding=" 0 2">
-        <Stack
-          flex="1"
-          spacing={4}
-          as="form"
-          maxW="96"
-          align="center"
-          onSubmit={handleSubmit(handleSignIn)}
-        >
-          <HiOutlineLink size={72} color="#E2E8F0" />
+        {!isOpen ? (
+          <Fade in={!isOpen}>
+            <Box padding="8" bg="gray.800" borderRadius="2xl">
+              <SignIn handleSignIn={handleSignIn} />
 
-          <Input
-            placeholder="E-mail"
-            {...register("email")}
-            error={errors.email}
-          />
-
-          <InputPassword
-            placeholder="Senha"
-            {...register("password")}
-            error={errors.password}
-          />
-
-          <Button
-            title="Entrar"
-            colorScheme="purple"
-            type="submit"
-            width="100%"
-          >
-            Entrar
-          </Button>
-        </Stack>
+              <Text color="gray.300" mt="4">
+                Não tem uma conta?{" "}
+                <Button
+                  onClick={onOpen}
+                  _hover={{
+                    color: "purple.100",
+                    textDecoration: "underline",
+                  }}
+                  variant="unstyled"
+                  p="0 2"
+                >
+                  Crie aqui!
+                </Button>
+              </Text>
+            </Box>
+          </Fade>
+        ) : (
+          <Fade in={isOpen}>
+            <Box>
+              <Register handleRegister={handleRegister} goBack={handleToggle} />
+            </Box>
+          </Fade>
+        )}
       </Flex>
     </Flex>
   );

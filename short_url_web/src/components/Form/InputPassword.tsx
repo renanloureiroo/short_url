@@ -47,6 +47,7 @@ const InputBase: ForwardRefRenderFunction<
             aria-label="Senha visível"
             color="gray.300"
             onClick={handleClick}
+            _hover={{ color: "purple.500" }}
             icon={
               showPassword ? (
                 <MdVisibilityOff size={24} />
