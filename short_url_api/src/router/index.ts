@@ -4,6 +4,6 @@ import { shortUrlRoutes } from './shortUrl.router'
 const router = Router()
 
 router.use('/accounts', accountsRoutes)
-router.use('/shorting', shortUrlRoutes)
+router.use('/links', shortUrlRoutes)
 
 export { router }

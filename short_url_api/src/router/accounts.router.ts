@@ -4,7 +4,7 @@ import { CreateUserController } from '../modules/accounts/useCases/CreateUser/Cr
 
 const accountsRoutes = Router()
 
-accountsRoutes.post('/', new CreateUserController().handle)
+accountsRoutes.post('/create', new CreateUserController().handle)
 accountsRoutes.post('/authenticate', new AuthenticatedController().handle)
 
 export { accountsRoutes }
