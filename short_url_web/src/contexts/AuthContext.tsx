@@ -15,6 +15,8 @@ interface IResponse {
 
 interface AuthContextProps {
   user: User | null;
+  loading: boolean;
+  authenticated: boolean;
   signIn(email: string, password: string): Promise<void>;
   signOut(): void;
   signUp(name: string, email: string, password: string): Promise<void>;
@@ -28,7 +30,8 @@ export const AuthContext = createContext({} as AuthContextProps);
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const [authenticated, setAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -38,8 +41,11 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     const token = localStorage.getItem("@shortUrl:token");
     if (token) {
       const tokenFormatted = JSON.parse(token);
-      setToken(tokenFormatted);
+      api.defaults.headers.common["Authorization"] = `Bearer ${tokenFormatted}`;
+      setAuthenticated(true);
     }
+
+    setLoading(false);
   };
 
   const signIn = async (email: string, password: string) => {
@@ -56,9 +62,10 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         email: data.user.email,
       });
 
-      setToken(data.token);
-
       localStorage.setItem(key, JSON.stringify(data.token));
+
+      api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+      setAuthenticated(true);
 
       navigate("/home");
     } catch (err) {
@@ -67,9 +74,10 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   };
   const signOut = () => {
     setUser(null);
-    setToken(null);
+    delete api.defaults.headers.common["Authorization"];
     localStorage.removeItem(key);
   };
+
   const signUp = async (name: string, email: string, password: string) => {
     try {
       await api.post("/auth/signup", {
@@ -88,14 +96,14 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     rehydrate();
   }, []);
 
-  useEffect(() => {
-    if (token) {
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    }
-  }, [token]);
+  if (loading) {
+    return null;
+  }
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut, signUp }}>
+    <AuthContext.Provider
+      value={{ user, signIn, signOut, signUp, loading, authenticated }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -5,7 +5,6 @@ import Lottie from "react-lottie";
 import LinkAnimation from "../assets/images/linkAnimation.json";
 import { Register } from "../components/Register";
 import { SignIn } from "../components/SigIn";
-import { useAuth } from "../hooks/useAuth";
 
 interface LoginData {
   email: string;
@@ -20,10 +19,6 @@ interface RegisterData {
 
 export const Login = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
-
-  const { signIn } = useAuth();
-
-  const handleSignIn = () => {};
 
   const handleRegister: SubmitHandler<RegisterData> = useCallback(
     async (data) => {
