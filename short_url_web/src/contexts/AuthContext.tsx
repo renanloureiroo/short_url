@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
 
 type User = {
@@ -29,6 +30,8 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
+  const navigate = useNavigate();
+
   const key = "@shortUrl:token";
 
   const rehydrate = () => {
@@ -56,6 +59,8 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       setToken(data.token);
 
       localStorage.setItem(key, JSON.stringify(data.token));
+
+      navigate("/home");
     } catch (err) {
       console.log(err);
     }

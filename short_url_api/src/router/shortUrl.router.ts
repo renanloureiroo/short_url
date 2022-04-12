@@ -5,7 +5,7 @@ import { GetMyUrlsController } from '../modules/url/useCases/GetMyUrls/GetMyUrls
 
 const shortUrlRoutes = Router()
 
-shortUrlRoutes.post('/', new CreateShotUrlController().handle)
-shortUrlRoutes.get('/my', ensureAuthenticated, new GetMyUrlsController().handle)
+shortUrlRoutes.get('/me', ensureAuthenticated, new GetMyUrlsController().handle)
+shortUrlRoutes.post('/shorten', new CreateShotUrlController().handle)
 
 export { shortUrlRoutes }

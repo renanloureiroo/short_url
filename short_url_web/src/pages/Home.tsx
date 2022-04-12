@@ -7,12 +7,18 @@ import {
   InputLeftAddon,
   InputRightElement,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdAddLink } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 import { api } from "../services/api";
 
 export const Home = () => {
   const [link, setLink] = useState("");
+
+  const { user } = useAuth();
+
+  const navigate = useNavigate();
 
   const handleShortingLink = async () => {
     try {
@@ -21,6 +27,12 @@ export const Home = () => {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, []);
 
   return (
     <Box bg="gray.800" minHeight="100vh">
