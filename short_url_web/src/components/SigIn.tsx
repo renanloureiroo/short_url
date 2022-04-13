@@ -1,6 +1,8 @@
 import { Button, Stack } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { useAuth } from "../hooks/useAuth";
 import { Input } from "./Form/Input";
@@ -19,9 +21,20 @@ const schema = Yup.object().shape({
 
 export const SignIn = () => {
   const { signIn } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSignIn = ({ email, password }: FormData) => {
-    signIn(email, password);
+  const navigate = useNavigate();
+
+  const handleSignIn = async ({ email, password }: FormData) => {
+    setIsLoading(true);
+    try {
+      await signIn(email, password);
+      navigate("/home");
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
   const {
     register,
@@ -47,7 +60,13 @@ export const SignIn = () => {
         error={errors.password}
       />
 
-      <Button title="Entrar" colorScheme="purple" type="submit" width="100%">
+      <Button
+        title="Entrar"
+        colorScheme="purple"
+        type="submit"
+        width="100%"
+        isLoading={isLoading}
+      >
         Entrar
       </Button>
     </Stack>

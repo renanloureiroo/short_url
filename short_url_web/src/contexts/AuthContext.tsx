@@ -1,5 +1,4 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
 
 type User = {
@@ -25,6 +24,7 @@ interface AuthContextProps {
 interface AuthContextProviderProps {
   children: ReactNode;
 }
+const key = "@shortUrl:token";
 
 export const AuthContext = createContext({} as AuthContextProps);
 
@@ -33,14 +33,11 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const navigate = useNavigate();
-
-  const key = "@shortUrl:token";
-
   const rehydrate = () => {
     const token = localStorage.getItem("@shortUrl:token");
     if (token) {
       const tokenFormatted = JSON.parse(token);
+      console.log(tokenFormatted);
       api.defaults.headers.common["Authorization"] = `Bearer ${tokenFormatted}`;
       setAuthenticated(true);
     }
@@ -66,8 +63,6 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
       api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
       setAuthenticated(true);
-
-      navigate("/home");
     } catch (err) {
       console.log(err);
     }

@@ -1,5 +1,7 @@
 import {
+  Avatar,
   Box,
+  Button,
   Flex,
   IconButton,
   Input,
@@ -16,9 +18,15 @@ import { api } from "../services/api";
 export const Home = () => {
   const [link, setLink] = useState("");
 
-  const { authenticated } = useAuth();
+  const { authenticated, user, signOut } = useAuth();
 
   const navigate = useNavigate();
+
+  const handleMyLinks = async () => {
+    const response = await api.get("/links/me");
+
+    console.log(response.data);
+  };
 
   const handleShortingLink = async () => {
     try {
@@ -36,7 +44,11 @@ export const Home = () => {
 
   return (
     <Box bg="gray.800" minHeight="100vh">
-      <Box h="300px" bg="purple.600"></Box>
+      <Box as="header" h="300px" bg="purple.600">
+        <Button onClick={signOut}>Sair</Button>
+        <Button onClick={handleMyLinks}>Get my links</Button>
+        <Avatar name={user?.name} />
+      </Box>
       <Flex w="100%" maxW="1240px" m="0 auto" p=" 0 16">
         <InputGroup mt="-31px">
           <InputLeftAddon
