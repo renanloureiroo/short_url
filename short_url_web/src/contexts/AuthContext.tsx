@@ -1,4 +1,6 @@
+import { useToast } from "@chakra-ui/react";
 import { createContext, ReactNode, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
 
 type User = {
@@ -33,6 +35,9 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const navigate = useNavigate();
+  const toast = useToast();
+
   const rehydrate = () => {
     const token = localStorage.getItem("@shortUrl:token");
     if (token) {
@@ -64,13 +69,15 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
       setAuthenticated(true);
     } catch (err) {
-      console.log(err);
+      throw new Error("Falha ao fazer login");
     }
   };
   const signOut = () => {
     setUser(null);
     delete api.defaults.headers.common["Authorization"];
     localStorage.removeItem(key);
+    setAuthenticated(false);
+    navigate("/login");
   };
 
   const signUp = async (name: string, email: string, password: string) => {
@@ -82,9 +89,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       });
 
       await signIn(email, password);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   useEffect(() => {
