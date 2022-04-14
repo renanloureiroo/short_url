@@ -9,9 +9,8 @@ import {
   InputLeftAddon,
   InputRightElement,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MdAddLink } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { api } from "../services/api";
 
@@ -20,7 +19,7 @@ export const Home = () => {
 
   const { authenticated, user, signOut, loading } = useAuth();
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleMyLinks = async () => {
     const response = await api.get("/links/me");
@@ -29,18 +28,21 @@ export const Home = () => {
   };
 
   const handleShortingLink = async () => {
-    try {
-      await api.post("/links/shorten", { link });
-    } catch (err) {
-      console.log(err);
+    if (link) {
+      try {
+        const { data } = await api.post("/links/shorten", { link });
+        console.log(data);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
-  useEffect(() => {
-    if (!loading && !authenticated) {
-      navigate("/login");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!loading && !authenticated) {
+  //     navigate("/login");
+  //   }
+  // }, []);
 
   return (
     <Box bg="gray.800" minHeight="100vh">
@@ -57,7 +59,14 @@ export const Home = () => {
             color="purple.600"
             fontWeight="bold"
           />
-          <Input type="url" size="lg" bg="white" p="8" />
+          <Input
+            type="url"
+            size="lg"
+            bg="white"
+            p="8"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+          />
           <InputRightElement padding="8">
             <IconButton
               _hover={{ color: "purple.600" }}
@@ -65,6 +74,7 @@ export const Home = () => {
               aria-label="Gerar url curta"
               icon={<MdAddLink size={32} />}
               variant="unstyled"
+              onClick={handleShortingLink}
             />
           </InputRightElement>
         </InputGroup>

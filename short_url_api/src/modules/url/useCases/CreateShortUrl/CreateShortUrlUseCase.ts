@@ -18,7 +18,9 @@ class CreateShotUrlUseCase {
         url,
       },
     })
-    if (urlAlreadyExits) return urlAlreadyExits
+    if (urlAlreadyExits) {
+      return urlAlreadyExits
+    }
 
     const newShortUrl = nanoid(6)
 

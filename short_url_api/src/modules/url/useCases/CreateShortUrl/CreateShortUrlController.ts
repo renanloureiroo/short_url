@@ -8,8 +8,12 @@ interface IRequest {
 
 class CreateShotUrlController {
   async handle(request: Request, response: Response): Promise<Response> {
-    const { link, userId }: IRequest = request.body
-
+    const { user } = request
+    const { link }: IRequest = request.body
+    let userId
+    if (!!user) {
+      userId = user.id ?? undefined
+    }
     const createShortUrlUseCase = new CreateShotUrlUseCase()
 
     const urlShort = await createShortUrlUseCase.exec({
