@@ -18,7 +18,7 @@ import { api } from "../services/api";
 export const Home = () => {
   const [link, setLink] = useState("");
 
-  const { authenticated, user, signOut } = useAuth();
+  const { authenticated, user, signOut, loading } = useAuth();
 
   const navigate = useNavigate();
 
@@ -37,7 +37,7 @@ export const Home = () => {
   };
 
   useEffect(() => {
-    if (!authenticated) {
+    if (!loading && !authenticated) {
       navigate("/login");
     }
   }, []);

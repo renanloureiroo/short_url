@@ -7,7 +7,7 @@ class MeController {
 
     const meUseCase = new MeUseCase()
 
-    const user = meUseCase.exec(userAuthenticated.id)
+    const user = await meUseCase.exec(userAuthenticated.id)
 
     return response.json(user)
   }

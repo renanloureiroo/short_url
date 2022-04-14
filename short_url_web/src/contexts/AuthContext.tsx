@@ -1,4 +1,3 @@
-import { useToast } from "@chakra-ui/react";
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
@@ -36,14 +35,17 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
-  const toast = useToast();
 
-  const rehydrate = () => {
+  const rehydrate = async () => {
     const token = localStorage.getItem("@shortUrl:token");
     if (token) {
       const tokenFormatted = JSON.parse(token);
-      console.log(tokenFormatted);
       api.defaults.headers.common["Authorization"] = `Bearer ${tokenFormatted}`;
+
+      const { data } = await api.get<User>("/account/me");
+
+      setUser(data);
+
       setAuthenticated(true);
     }
 
@@ -52,7 +54,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { data } = await api.post<IResponse>("/auth/me", {
+      const { data } = await api.post<IResponse>("/account/signin", {
         email,
         password,
       });
