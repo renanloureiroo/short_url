@@ -8,7 +8,15 @@ import {
   InputGroup,
   InputLeftAddon,
   InputRightElement,
-  Text,
+  Table,
+  TableCaption,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tooltip,
+  Tr,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { MdAddLink } from "react-icons/md";
@@ -78,24 +86,65 @@ export const Home = () => {
           </InputRightElement>
         </InputGroup>
       </Flex>
+      <Flex
+        direction="column"
+        w="100%"
+        mt="10"
+        alignItems="center"
+        justifyContent="center"
+      >
+        {!isLoading && (
+          <>
+            <TableContainer>
+              <Table color="gray.300" colorScheme="whiteAlpha" variant="simple">
+                <TableCaption
+                  placement="top"
+                  color="gray.200"
+                  fontSize="md"
+                  fontWeight="bold"
+                >
+                  Ranking 100 links mais visitados
+                </TableCaption>
+                <Thead>
+                  <Tr>
+                    <Th>URL</Th>
+                    <Th>VISITAS</Th>
+                  </Tr>
+                </Thead>
 
-      {!isLoading && (
-        <>
-          <Pagination
-            totalCount={data!.totalCount}
-            onPageChange={setPage}
-            currentPage={page}
-            itensPerPage={5}
-          />
-          <ul>
-            {data!.links.map((link) => (
-              <li key={link.id}>
-                <Text color="gray.100">{link.url}</Text>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+                <Tbody>
+                  {!isLoading &&
+                    data?.links.map((link) => (
+                      <Tr>
+                        <Tooltip
+                          hasArrow
+                          label={link.url}
+                          aria-label="URL"
+                          openDelay={500}
+                        >
+                          <Td
+                            maxW="500px"
+                            textOverflow="ellipsis"
+                            overflowX="hidden"
+                          >
+                            {link.url}
+                          </Td>
+                        </Tooltip>
+                        <Td></Td>
+                      </Tr>
+                    ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+            <Pagination
+              totalCount={data!.totalCount}
+              onPageChange={setPage}
+              currentPage={page}
+              itensPerPage={5}
+            />
+          </>
+        )}
+      </Flex>
     </Box>
   );
 };
