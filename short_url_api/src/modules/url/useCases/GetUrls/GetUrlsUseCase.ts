@@ -7,7 +7,12 @@ interface GetUrlsParams {
 
 class GetUrlsUseCase {
   async exec({ page = '1', limit = '5' }: GetUrlsParams) {
-    const links = await prisma.url.findMany()
+    const links = await prisma.url.findMany({
+      orderBy: {
+        visits: 'desc',
+      },
+    })
+    console.log(links)
 
     const total = links.length
     const startIndex = (Number(page) - 1) * Number(limit)
