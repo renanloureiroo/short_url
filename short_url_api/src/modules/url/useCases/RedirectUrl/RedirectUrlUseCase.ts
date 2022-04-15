@@ -7,10 +7,16 @@ class RedirectUrlUseCase {
         shortUrl,
       },
     })
-    // if (!link) {
-    //   throw new AppError('Url does not exist')
-    // }
-
+    if (link) {
+      await prisma.url.update({
+        where: { id: link.id },
+        data: {
+          visits: {
+            increment: 1,
+          },
+        },
+      })
+    }
     return link
   }
 }
