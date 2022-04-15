@@ -3,9 +3,6 @@ import axios, { AxiosError } from "axios";
 const token = localStorage.getItem("@shortUrl:token");
 
 const api = axios.create({
-  headers: {
-    "Access-Control-Allow-Origin": "*",
-  },
   baseURL: "http://localhost:3333",
 });
 

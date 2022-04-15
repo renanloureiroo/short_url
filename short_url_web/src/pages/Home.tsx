@@ -8,18 +8,22 @@ import {
   InputGroup,
   InputLeftAddon,
   InputRightElement,
+  Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { MdAddLink } from "react-icons/md";
+import { Pagination } from "../components/Pagination";
 import { useAuth } from "../hooks/useAuth";
+import { useLinks } from "../hooks/useLinks";
 import { api } from "../services/api";
 
 export const Home = () => {
   const [link, setLink] = useState("");
 
-  const { authenticated, user, signOut, loading } = useAuth();
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useLinks(page);
 
-  // const navigate = useNavigate();
+  const { authenticated, user, signOut, loading } = useAuth();
 
   const handleMyLinks = async () => {
     const response = await api.get("/links/me");
@@ -31,18 +35,13 @@ export const Home = () => {
     if (link) {
       try {
         const { data } = await api.post("/links/shorten", { link });
+        setLink("");
         console.log(data);
       } catch (err) {
         console.log(err);
       }
     }
   };
-
-  // useEffect(() => {
-  //   if (!loading && !authenticated) {
-  //     navigate("/login");
-  //   }
-  // }, []);
 
   return (
     <Box bg="gray.800" minHeight="100vh">
@@ -79,6 +78,24 @@ export const Home = () => {
           </InputRightElement>
         </InputGroup>
       </Flex>
+
+      {!isLoading && (
+        <>
+          <Pagination
+            totalCount={data!.totalCount}
+            onPageChange={setPage}
+            currentPage={page}
+            itensPerPage={5}
+          />
+          <ul>
+            {data!.links.map((link) => (
+              <li key={link.id}>
+                <Text color="gray.100">{link.url}</Text>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </Box>
   );
 };

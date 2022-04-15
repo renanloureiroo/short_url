@@ -13,6 +13,7 @@ app.use(morgan('dev'))
 app.use(
   cors({
     origin: '*',
+    exposedHeaders: 'x-total-count',
   })
 )
 
