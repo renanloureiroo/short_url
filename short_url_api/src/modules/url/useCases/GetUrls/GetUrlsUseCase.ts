@@ -12,7 +12,6 @@ class GetUrlsUseCase {
         visits: 'desc',
       },
     })
-    console.log(links)
 
     const total = links.length
     const startIndex = (Number(page) - 1) * Number(limit)

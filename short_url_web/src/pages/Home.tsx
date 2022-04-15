@@ -100,7 +100,7 @@ export const Home = () => {
                 <TableCaption
                   placement="top"
                   color="gray.200"
-                  fontSize="md"
+                  fontSize="lg"
                   fontWeight="bold"
                 >
                   Ranking 100 links mais visitados
@@ -130,7 +130,7 @@ export const Home = () => {
                             {link.url}
                           </Td>
                         </Tooltip>
-                        <Td></Td>
+                        <Td textAlign="center">{link.visits}</Td>
                       </Tr>
                     ))}
                 </Tbody>

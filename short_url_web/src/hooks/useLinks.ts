@@ -4,6 +4,7 @@ import { api } from "../services/api";
 type Link = {
   id: string;
   url: string;
+  visits: number;
   shortUrl: string;
   userId: string | null;
 };
