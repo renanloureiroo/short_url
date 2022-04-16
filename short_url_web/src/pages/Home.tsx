@@ -115,7 +115,7 @@ export const Home = () => {
                 <Tbody>
                   {!isLoading &&
                     data?.links.map((link) => (
-                      <Tr>
+                      <Tr key={link.id}>
                         <Tooltip
                           hasArrow
                           label={link.url}

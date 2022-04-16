@@ -10,26 +10,74 @@ import {
   Thead,
   Tooltip,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
 import { HiClipboardCopy } from "react-icons/hi";
 import { RiDeleteBin5Fill } from "react-icons/ri";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { api } from "../services/api";
+import { formatDate } from "../services/formatDate";
+import { queryClient } from "../services/queryClient";
 
 type Link = {
   id: string;
   url: string;
   shortUrl: string;
   visits: number;
+  createdAt: string;
 };
 
 export const Me = () => {
-  const { data, isLoading } = useQuery("myLinks", async () => {
-    const { data } = await api.get<Link[]>("links/me");
-    console.log(data);
+  const { data, isLoading } = useQuery<Link[]>("myLinks", async () => {
+    const response = await api.get<Link[]>("links/me");
 
+    const data = response.data.map((link) => {
+      return {
+        id: link.id,
+        url: link.url,
+        shortUrl: link.shortUrl,
+        visits: link.visits,
+        createdAt: formatDate(link.createdAt),
+      };
+    });
+    console.log(data);
     return data;
   });
+
+  const deleteLink = useMutation(
+    async (id: string) => {
+      await api.delete(`/links/`, {
+        params: { id },
+      });
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("myLinks");
+      },
+    }
+  );
+
+  const toast = useToast();
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteLink.mutateAsync(id);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleCopyShortLink = (shortLink: string) => {
+    navigator.clipboard.writeText(`http://localhost:3333/${shortLink}`);
+
+    toast({
+      status: "success",
+      title: "Copiado",
+      description: "Short link copiado",
+      duration: 2000,
+      position: "top",
+    });
+  };
   return (
     <Box bg="gray.800" minH="100vh">
       <Box as="header" h="300px" bg="purple.600"></Box>
@@ -44,8 +92,9 @@ export const Me = () => {
             <Thead>
               <Tr>
                 <Th>URL</Th>
-                <Th>SHORT</Th>
-                <Th>VISITAS</Th>
+                <Th textAlign="center">SHORT</Th>
+                <Th textAlign="center">VISITAS</Th>
+                <Th textAlign="center">DATA</Th>
                 <Th></Th>
                 <Th></Th>
               </Tr>
@@ -68,12 +117,14 @@ export const Me = () => {
                     </Tooltip>
                     <Td>{link.shortUrl}</Td>
                     <Td textAlign="center">{link.visits}</Td>
+                    <Td textAlign="center">{link.createdAt}</Td>
                     <Td>
                       <IconButton
                         colorScheme="purple"
                         size="lg"
                         aria-label="Copiar link curto"
                         icon={<HiClipboardCopy fontSize={20} />}
+                        onClick={() => handleCopyShortLink(link.shortUrl)}
                       />
                     </Td>
                     <Td>
@@ -81,8 +132,9 @@ export const Me = () => {
                         colorScheme="red"
                         bg="red.700"
                         size="lg"
-                        aria-label="Copiar link curto"
+                        aria-label="Excluir"
                         icon={<RiDeleteBin5Fill fontSize={20} />}
+                        onClick={() => handleDelete(link.id)}
                       />
                     </Td>
                   </Tr>

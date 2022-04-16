@@ -3,11 +3,13 @@ import { DeleteLinkUseCase } from './DeleteLinkUseCase'
 
 class DeleteLinkController {
   async handle(request: Request, response: Response): Promise<Response> {
-    const id = request.params.id as string
+    const id = request.query.id as string
+
+    console.log(id)
 
     const deleteLinkUseCase = new DeleteLinkUseCase()
 
-    deleteLinkUseCase.exec(id)
+    await deleteLinkUseCase.exec(id)
 
     return response.end()
   }
