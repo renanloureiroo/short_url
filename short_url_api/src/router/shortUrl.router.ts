@@ -15,4 +15,6 @@ shortUrlRoutes.post(
   new CreateShotUrlController().handle
 )
 
+shortUrlRoutes.delete('/:id')
+
 export { shortUrlRoutes }
