@@ -1,12 +1,14 @@
-import { Button, Stack, useToast } from "@chakra-ui/react";
+import { Stack, useToast } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { useAuth } from "../hooks/useAuth";
+import { Button } from "./Button";
 import { Input } from "./Form/Input";
 import { InputPassword } from "./Form/InputPassword";
+
 interface FormData {
   email: string;
   password: string;
@@ -19,21 +21,22 @@ const schema = Yup.object().shape({
   password: Yup.string().required("Senha é obrigatória!"),
 });
 
-export const SignIn = () => {
+export const SignInForm = () => {
+  const [loading, setLoading] = useState(false);
   const { signIn } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const toast = useToast();
 
   const handleSignIn: SubmitHandler<FormData> = async (data, e) => {
     e?.preventDefault();
-    console.log(data, e);
-    setIsLoading(true);
+
+    setLoading(true);
     try {
       await signIn(data.email, data.password);
       navigate("/home");
     } catch (err) {
+      console.log(err);
       if (err instanceof Error) {
         toast({
           position: "top",
@@ -47,7 +50,7 @@ export const SignIn = () => {
         console.log(err);
       }
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
   const {
@@ -60,10 +63,10 @@ export const SignIn = () => {
   });
   return (
     <Stack
+      w={"100%"}
       flex="1"
       spacing={4}
       as="form"
-      maxW="96"
       align="center"
       onSubmit={handleSubmit(handleSignIn)}
     >
@@ -80,10 +83,8 @@ export const SignIn = () => {
         colorScheme="purple"
         type="submit"
         width="100%"
-        isLoading={isLoading}
-      >
-        Entrar
-      </Button>
+        isLoading={loading}
+      />
     </Stack>
   );
 };

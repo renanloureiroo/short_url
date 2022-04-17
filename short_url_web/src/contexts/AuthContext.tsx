@@ -79,7 +79,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     delete api.defaults.headers.common["Authorization"];
     localStorage.removeItem(key);
     setAuthenticated(false);
-    navigate("/login");
+    navigate("/");
   };
 
   const signUp = async (name: string, email: string, password: string) => {

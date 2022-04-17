@@ -1,15 +1,14 @@
 import {
-  Avatar,
   Box,
-  Button,
   Flex,
+  Heading,
   IconButton,
   Input,
   InputGroup,
   InputLeftAddon,
   InputRightElement,
+  Spinner,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
@@ -20,8 +19,8 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { MdAddLink } from "react-icons/md";
+import { Header } from "../components/Header";
 import { Pagination } from "../components/Pagination";
-import { useAuth } from "../hooks/useAuth";
 import { useLinks } from "../hooks/useLinks";
 import { api } from "../services/api";
 
@@ -29,15 +28,7 @@ export const Home = () => {
   const [link, setLink] = useState("");
 
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useLinks(page);
-
-  const { authenticated, user, signOut, loading } = useAuth();
-
-  const handleMyLinks = async () => {
-    const response = await api.get("/links/me");
-
-    console.log(response.data);
-  };
+  const { data, isLoading, isFetching } = useLinks(page);
 
   const handleShortingLink = async () => {
     if (link) {
@@ -53,12 +44,8 @@ export const Home = () => {
 
   return (
     <Box bg="gray.800" minHeight="100vh">
-      <Box as="header" h="300px" bg="purple.600">
-        <Button onClick={signOut}>Sair</Button>
-        <Button onClick={handleMyLinks}>Get my links</Button>
-        <Avatar name={user?.name} />
-      </Box>
-      <Flex w="100%" maxW="1240px" m="0 auto" p=" 0 16">
+      <Header />
+      <Flex w="100%" maxW="1240px" m="0 auto" p="0 8">
         <InputGroup mt="-31px">
           <InputLeftAddon
             p="8"
@@ -66,22 +53,31 @@ export const Home = () => {
             color="purple.600"
             fontWeight="bold"
           />
+
           <Input
             type="url"
             size="lg"
             bg="white"
-            p="8"
+            py="8"
+            pr={"50px"}
             value={link}
             onChange={(e) => setLink(e.target.value)}
           />
-          <InputRightElement padding="8">
+          <InputRightElement
+            w="4rem"
+            height={"100%"}
+            display="flex"
+            alignItems={"center"}
+            justifyContent="center"
+          >
             <IconButton
+              p="8"
               _hover={{ color: "purple.600" }}
               _focus={{ border: "none" }}
               aria-label="Gerar url curta"
               icon={<MdAddLink size={32} />}
-              variant="unstyled"
               onClick={handleShortingLink}
+              variant="unstyled"
             />
           </InputRightElement>
         </InputGroup>
@@ -93,56 +89,56 @@ export const Home = () => {
         alignItems="center"
         justifyContent="center"
       >
-        {!isLoading && (
-          <>
-            <TableContainer>
-              <Table color="gray.300" colorScheme="whiteAlpha" variant="simple">
-                <TableCaption
-                  placement="top"
-                  color="gray.200"
-                  fontSize="lg"
-                  fontWeight="bold"
-                >
-                  Ranking 100 links mais visitados
-                </TableCaption>
-                <Thead>
-                  <Tr>
-                    <Th>URL</Th>
-                    <Th>VISITAS</Th>
-                  </Tr>
-                </Thead>
+        <Heading color={"gray.100"} fontSize="md" fontWeight={"bold"}>
+          Ranking Top 100 {!isLoading && isFetching && <Spinner size={"md"} />}
+        </Heading>
 
-                <Tbody>
-                  {!isLoading &&
-                    data?.links.map((link) => (
-                      <Tr key={link.id}>
-                        <Tooltip
-                          hasArrow
-                          label={link.url}
-                          aria-label="URL"
-                          openDelay={500}
-                        >
-                          <Td
-                            maxW="500px"
-                            textOverflow="ellipsis"
-                            overflowX="hidden"
-                          >
-                            {link.url}
-                          </Td>
-                        </Tooltip>
-                        <Td textAlign="center">{link.visits}</Td>
-                      </Tr>
-                    ))}
-                </Tbody>
-              </Table>
-            </TableContainer>
-            <Pagination
-              totalCount={data!.totalCount}
-              onPageChange={setPage}
-              currentPage={page}
-              itensPerPage={5}
-            />
-          </>
+        <TableContainer>
+          <Table
+            size={"lg"}
+            color="gray.300"
+            colorScheme="whiteAlpha"
+            variant="simple"
+          >
+            <Thead>
+              <Tr>
+                <Th>URL</Th>
+                <Th>VISITAS</Th>
+              </Tr>
+            </Thead>
+
+            <Tbody>
+              {!isLoading &&
+                data?.links.map((link) => (
+                  <Tr key={link.id}>
+                    <Tooltip
+                      hasArrow
+                      label={link.url}
+                      aria-label="URL"
+                      openDelay={500}
+                    >
+                      <Td
+                        maxW="500px"
+                        textOverflow="ellipsis"
+                        overflowX="hidden"
+                      >
+                        {link.url}
+                      </Td>
+                    </Tooltip>
+                    <Td textAlign="center">{link.visits}</Td>
+                  </Tr>
+                ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+
+        {!isLoading && (
+          <Pagination
+            totalCount={data!.totalCount}
+            onPageChange={setPage}
+            currentPage={page}
+            itensPerPage={5}
+          />
         )}
       </Flex>
     </Box>
