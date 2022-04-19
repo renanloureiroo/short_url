@@ -24,7 +24,6 @@ export const Pagination = ({
   currentPage = 1,
   onPageChange,
 }: PaginationProps) => {
-  console.log(totalCount);
   const lastPage = Math.ceil(totalCount / itensPerPage);
 
   const previousPages =
@@ -41,9 +40,10 @@ export const Pagination = ({
       : [];
 
   return (
-    <Stack>
+    <Stack data-testid="pagination">
       <Stack direction="row" spacing={2}>
         {currentPage > 1 + siblingsCount && (
+          // First Page
           <>
             <PaginationItem onPageChange={onPageChange} number={1} />
             {currentPage > 2 + siblingsCount && (
@@ -53,7 +53,7 @@ export const Pagination = ({
             )}
           </>
         )}
-
+        // Previous Pages
         {previousPages.length > 0 &&
           previousPages.map((page) => (
             <PaginationItem
@@ -62,13 +62,13 @@ export const Pagination = ({
               key={page}
             />
           ))}
-
+        // Current Page
         <PaginationItem
           number={currentPage}
           onPageChange={onPageChange}
           isCurrent
         />
-
+        // Next Pages
         {nextPages.length > 0 &&
           nextPages.map((page) => (
             <PaginationItem
@@ -77,7 +77,7 @@ export const Pagination = ({
               key={page}
             />
           ))}
-
+        // Last Page
         {currentPage + siblingsCount < lastPage && (
           <>
             {currentPage + 1 + siblingsCount < lastPage && (

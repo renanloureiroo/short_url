@@ -15,6 +15,7 @@ export const PaginationItem = ({
   if (isCurrent) {
     return (
       <Button
+        data-testid="paginationItem"
         size="sm"
         fontSize="xs"
         w="4"
@@ -33,6 +34,7 @@ export const PaginationItem = ({
 
   return (
     <Button
+      data-testid="paginationItem"
       size="sm"
       fontSize="xs"
       w="4"
