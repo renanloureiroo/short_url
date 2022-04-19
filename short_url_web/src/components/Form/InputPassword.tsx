@@ -50,15 +50,19 @@ const InputBase: ForwardRefRenderFunction<
             _hover={{ color: "purple.500" }}
             icon={
               showPassword ? (
-                <MdVisibilityOff size={24} />
-              ) : (
                 <MdVisibility size={24} />
+              ) : (
+                <MdVisibilityOff size={24} />
               )
             }
           />
         </InputRightElement>
       </InputGroup>
-      {!!error && <FormErrorMessage>{error.message}</FormErrorMessage>}
+      {!!error && (
+        <FormErrorMessage data-testid="errorMessage">
+          {error.message}
+        </FormErrorMessage>
+      )}
     </FormControl>
   );
 };

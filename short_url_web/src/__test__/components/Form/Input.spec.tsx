@@ -35,7 +35,7 @@ describe("Input component", () => {
         wrapper: Wrapper,
       }
     );
-    debug();
+
     expect(screen.getByPlaceholderText("Input test")).toHaveAttribute(
       "aria-invalid",
       "true"
