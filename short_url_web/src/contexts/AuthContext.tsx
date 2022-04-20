@@ -13,7 +13,7 @@ interface IResponse {
   user: User;
 }
 
-interface AuthContextProps {
+export interface AuthContextProps {
   user: User | null;
   loading: boolean;
   authenticated: boolean;

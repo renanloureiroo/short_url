@@ -36,7 +36,6 @@ export const SignInForm = () => {
       await signIn(data.email, data.password);
       navigate("/home");
     } catch (err) {
-      console.log(err);
       if (err instanceof Error) {
         toast({
           position: "top",
@@ -46,8 +45,6 @@ export const SignInForm = () => {
           duration: 4000,
           isClosable: true,
         });
-      } else {
-        console.log(err);
       }
     } finally {
       setLoading(false);
@@ -70,9 +67,15 @@ export const SignInForm = () => {
       align="center"
       onSubmit={handleSubmit(handleSignIn)}
     >
-      <Input placeholder="E-mail" {...register("email")} error={errors.email} />
+      <Input
+        aria-label="E-mail"
+        placeholder="E-mail"
+        {...register("email")}
+        error={errors.email}
+      />
 
       <InputPassword
+        aria-label="Senha"
         placeholder="Senha"
         {...register("password")}
         error={errors.password}
