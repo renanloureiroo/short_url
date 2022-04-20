@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { ActiveLink } from "../../components/ActiveLink";
 import { MemoryRouter } from "react-router-dom";
-import { mocked } from "jest-mock";
+
 import { ChakraProvider } from "@chakra-ui/react";
 
 describe("ActiveLink component", () => {

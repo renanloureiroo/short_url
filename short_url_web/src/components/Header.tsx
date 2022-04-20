@@ -43,8 +43,9 @@ export const Header = () => {
             title={authenticated ? "Sair" : "Login"}
             onClick={authenticated ? signOut : handleLogin}
           />
-
-          <Avatar size={"md"} name={user?.name} />
+          {authenticated && (
+            <Avatar data-testid="avatar" size={"md"} name={user?.name} />
+          )}
         </Flex>
       </Flex>
     </Box>
