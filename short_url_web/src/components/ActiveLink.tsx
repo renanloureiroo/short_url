@@ -10,7 +10,9 @@ interface ActiveLinkProps extends LinkProps {}
 
 export const ActiveLink = ({ children, to }: ActiveLinkProps) => {
   const resolved = useResolvedPath(to);
+  console.log(resolved);
   const match = useMatch({ path: resolved.pathname, end: true });
+  console.log(match);
 
   return (
     <Link
