@@ -58,7 +58,6 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         email,
         password,
       });
-      console.log(data);
 
       setUser({
         id: data.user.id,
