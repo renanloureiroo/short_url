@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { waitFor } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
 import { ReactNode } from "react";
 import { MemoryRouter } from "react-router-dom";
@@ -8,6 +8,7 @@ import { useAuth } from "../../hooks/useAuth";
 
 import AxiosMocked from "axios-mock-adapter";
 import { api } from "../../services/api";
+import { AppError } from "../../Error/AppError";
 
 const ApiMocked = new AxiosMocked(api);
 
@@ -23,6 +24,7 @@ const Wrapper = ({ children }: WrapperProps) => {
   );
 };
 jest.spyOn(window.localStorage.__proto__, "setItem");
+
 window.localStorage.__proto__.setItem = jest.fn();
 
 describe("AuthContext", () => {
@@ -51,7 +53,7 @@ describe("AuthContext", () => {
       );
     });
 
-    it("sign error", async () => {
+    it("signIn error email or password incorrect", async () => {
       ApiMocked.onPost("/account/signin").reply(400, {
         error: "Email or password incorrect!",
       });
@@ -59,16 +61,26 @@ describe("AuthContext", () => {
       const { result } = renderHook(() => useAuth(), { wrapper: Wrapper });
       const signIn = result.current.signIn;
 
-      // await waitFor(() => signIn("fakeemail@email.com", "fakepassword"));
+      try {
+        await waitFor(() => signIn("fakeemail@email.com", "fakepassword"));
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+      }
+    });
 
-      //   await expect(
-      //     await signIn("fakeemail@email.com", "fakepassword")
-      //   ).rejects.toThrow();
-      //   await expect(
-      //     await signIn("fakeemail@email.com", "fakepassword")
-      //   ).rejects.toEqual({ error: "Falha ao fazer login" });
+    it("signIn server error", async () => {
+      ApiMocked.onPost("/account/signin").reply(500, {
+        error: "Internal server error",
+      });
 
-      //   return;
+      const { result } = renderHook(() => useAuth(), { wrapper: Wrapper });
+      const signIn = result.current.signIn;
+
+      try {
+        await waitFor(() => signIn("fakeemail@email.com", "fakepassword"));
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+      }
     });
   });
 });

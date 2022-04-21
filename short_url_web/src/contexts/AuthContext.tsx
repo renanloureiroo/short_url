@@ -20,7 +20,7 @@ export interface AuthContextProps {
   user: User | null;
   loading: boolean;
   authenticated: boolean;
-  signIn(email: string, password: string): Promise<void | AppErrorType>;
+  signIn(email: string, password: string): Promise<void | AppError>;
   signOut(): void;
   signUp(name: string, email: string, password: string): Promise<void>;
 }
@@ -41,6 +41,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
   const rehydrate = async () => {
     const token = localStorage.getItem("@shortUrl:token");
+
     if (token) {
       const tokenFormatted = JSON.parse(token);
       api.defaults.headers.common["Authorization"] = `Bearer ${tokenFormatted}`;
@@ -55,7 +56,10 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     setLoading(false);
   };
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (
+    email: string,
+    password: string
+  ): Promise<void | AppError> => {
     try {
       const { data } = await api.post<IResponse>("/account/signin", {
         email,
