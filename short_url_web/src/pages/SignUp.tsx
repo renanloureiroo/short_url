@@ -5,20 +5,7 @@ import Lottie from "react-lottie";
 import LinkAnimation from "../assets/images/linkAnimation.json";
 import { SingUpForm } from "../components/SignUpForm";
 
-interface SignUpFormData {
-  email: string;
-  password: string;
-  passwordConfirm: string;
-}
-
 export const SignUp = () => {
-  const handleRegister: SubmitHandler<SignUpFormData> = useCallback(
-    async (data) => {
-      console.log(data);
-    },
-    []
-  );
-
   return (
     <Flex minHeight="100vh" bgColor="gray.900" width="100%">
       <Flex

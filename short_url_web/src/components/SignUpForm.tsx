@@ -52,7 +52,7 @@ export const SingUpForm = () => {
         password,
       });
 
-      navigate("/signin");
+      navigate("/");
     } catch (err) {
       if (err instanceof Error) {
         toast({
