@@ -1,5 +1,8 @@
+import axios, { AxiosError } from "axios";
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AppError, AppErrorType } from "../Error/AppError";
+
 import { api } from "../services/api";
 
 type User = {
@@ -17,7 +20,7 @@ export interface AuthContextProps {
   user: User | null;
   loading: boolean;
   authenticated: boolean;
-  signIn(email: string, password: string): Promise<void>;
+  signIn(email: string, password: string): Promise<void | AppErrorType>;
   signOut(): void;
   signUp(name: string, email: string, password: string): Promise<void>;
 }
@@ -70,7 +73,20 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
       setAuthenticated(true);
     } catch (err) {
-      throw new Error("Falha ao fazer login");
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 400) {
+          throw new AppError({
+            title: "Erro ao fazer login",
+            message: "E-mail ou senha inválidos!",
+          });
+        } else if (err.response?.status === 500) {
+          throw new AppError({
+            title: "Erro ao fazer login",
+            message: "Erro interno do servidor",
+            statusCode: 500,
+          });
+        }
+      }
     }
   };
   const signOut = () => {

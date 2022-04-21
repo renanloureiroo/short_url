@@ -9,6 +9,8 @@ import { Button } from "./Button";
 import { Input } from "./Form/Input";
 import { InputPassword } from "./Form/InputPassword";
 
+import { AppError } from "../Error/AppError";
+
 interface FormData {
   email: string;
   password: string;
@@ -36,11 +38,11 @@ export const SignInForm = () => {
       await signIn(data.email, data.password);
       navigate("/home");
     } catch (err) {
-      if (err instanceof Error) {
+      if (err instanceof AppError) {
         toast({
           position: "top",
-          title: err.message,
-          description: "Verifique seu e-mail e senha",
+          title: err.title,
+          description: err.message,
           status: "error",
           duration: 4000,
           isClosable: true,

@@ -13,6 +13,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 
 import { useAuth } from "../../hooks/useAuth";
 import { mocked } from "jest-mock";
+import { AppError } from "../../Error/AppError";
 
 interface WrapperProps {
   children: ReactNode;
@@ -32,7 +33,9 @@ const Wrapper = ({ children }: WrapperProps) => {
 const sigInMockSuccess = jest.fn().mockReturnValue(Promise.resolve());
 const sigInMockFail = jest
   .fn()
-  .mockImplementation(() => Promise.reject(new Error("Falha ao fazer login!")));
+  .mockImplementation(() =>
+    Promise.reject(new AppError({ title: "error", message: "error message" }))
+  );
 
 describe("SignInForm component", () => {
   it("should render correctly", () => {
@@ -133,9 +136,7 @@ describe("SignInForm component", () => {
       "fakeemail@gmail.com",
       "fakepassword"
     );
-    expect(
-      screen.getByText("Verifique seu e-mail e senha")
-    ).toBeInTheDocument();
-    expect(screen.getByText("Falha ao fazer login!")).toBeInTheDocument();
+    expect(screen.getByText("error")).toBeInTheDocument();
+    expect(screen.getByText("error message")).toBeInTheDocument();
   });
 });
