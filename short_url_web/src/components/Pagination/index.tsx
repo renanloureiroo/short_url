@@ -40,7 +40,7 @@ export const Pagination = ({
       : [];
 
   return (
-    <Stack data-testid="pagination">
+    <Stack data-testid="pagination" my={8}>
       <Stack direction="row" spacing={2}>
         {currentPage > 1 + siblingsCount && (
           // First Page

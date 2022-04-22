@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, Stack } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Heading, Stack } from "@chakra-ui/react";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
@@ -17,17 +17,21 @@ export const Header = () => {
     <Box as="header" width={"100%"} h="300px" bg="purple.600">
       <Flex
         width={"100%"}
-        maxW="1240px"
+        maxW="1920px"
         m="0 auto"
-        p={6}
+        py={6}
+        px={8}
         alignItems="center"
-        justifyContent={"space-between"}
+        justifyContent={"flex-start"}
       >
+        <Heading mr={20} color={"white"}>
+          SHORTLINK
+        </Heading>
         <Stack direction="row" spacing={6}>
           <ActiveLink to={"/home"}>Início</ActiveLink>
           {authenticated && <ActiveLink to={"/me"}>Meus Links</ActiveLink>}
         </Stack>
-        <Flex>
+        <Flex ml="auto">
           <Button
             size={"lg"}
             maxW="100px"
