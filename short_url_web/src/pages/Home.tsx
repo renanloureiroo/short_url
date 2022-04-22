@@ -1,5 +1,6 @@
 import {
   Box,
+  Collapse,
   Flex,
   Heading,
   IconButton,
@@ -12,30 +13,62 @@ import {
   TableContainer,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tooltip,
   Tr,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { MdAddLink } from "react-icons/md";
+import { useMutation } from "react-query";
 import { Header } from "../components/Header";
 import { Pagination } from "../components/Pagination";
 import { useLinks } from "../hooks/useLinks";
 import { api } from "../services/api";
+import { queryClient } from "../services/queryClient";
+
+interface IResponseCreateLink {
+  id: string;
+  shortUrl: string;
+  url: string;
+}
 
 export const Home = () => {
   const [link, setLink] = useState("");
+  const { isOpen, onOpen } = useDisclosure();
 
   const [page, setPage] = useState(1);
   const { data, isLoading, isFetching } = useLinks(page);
 
+  const {
+    mutateAsync,
+    data: responseData,
+    isLoading: isLoadingCreate,
+    error,
+  } = useMutation(
+    async (link: string) => {
+      const { data } = await api.post<IResponseCreateLink>("/links/shorten", {
+        link,
+      });
+
+      return data;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("myLinks");
+      },
+    }
+  );
+
   const handleShortingLink = async () => {
-    if (link) {
+    if (!!link) {
       try {
-        const { data } = await api.post("/links/shorten", { link });
+        await mutateAsync(link);
+        onOpen();
         setLink("");
-        console.log(data);
+        console.log(responseData);
       } catch (err) {
         console.log(err);
       }
@@ -89,6 +122,22 @@ export const Home = () => {
         alignItems="center"
         justifyContent="center"
       >
+        <Collapse in={isOpen} animateOpacity>
+          <Flex
+            w={"100%"}
+            bg={"white"}
+            color={"purple.900"}
+            height={"10"}
+            borderRadius="base"
+            textAlign={"center"}
+            align="center"
+            justifyContent={"center"}
+            p="8"
+          >
+            {!isLoading && <Text>{responseData?.shortUrl}</Text>}
+          </Flex>
+        </Collapse>
+
         <Heading color={"gray.100"} fontSize="md" fontWeight={"bold"}>
           Ranking Top 100 {!isLoading && isFetching && <Spinner size={"md"} />}
         </Heading>
