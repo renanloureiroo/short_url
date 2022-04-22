@@ -25,15 +25,13 @@ class CreateShotUrlUseCase {
     const newShortUrl = nanoid(6)
 
     if (!userId) {
-      const newUrl = prisma.url.create({
+      return await prisma.url.create({
         data: { url, shortUrl: newShortUrl },
       })
-      return newUrl
     } else {
-      const newUrl = prisma.url.create({
+      return await prisma.url.create({
         data: { url, shortUrl: newShortUrl, userId },
       })
-      return newUrl
     }
   }
 }

@@ -1,5 +1,4 @@
 import { QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
 import { Route, Routes } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { Me } from "./pages/Me";
@@ -16,7 +15,6 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="me" element={<Me />} />
       </Routes>
-      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }

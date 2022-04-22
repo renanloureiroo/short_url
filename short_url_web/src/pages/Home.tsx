@@ -1,6 +1,7 @@
 import {
   Box,
   Collapse,
+  Divider,
   Flex,
   Heading,
   IconButton,
@@ -9,6 +10,7 @@ import {
   InputLeftAddon,
   InputRightElement,
   Spinner,
+  Stack,
   Table,
   TableContainer,
   Tbody,
@@ -19,8 +21,10 @@ import {
   Tooltip,
   Tr,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { HiClipboardCopy } from "react-icons/hi";
 import { MdAddLink } from "react-icons/md";
 import { useMutation } from "react-query";
 import { Header } from "../components/Header";
@@ -40,7 +44,21 @@ export const Home = () => {
   const { isOpen, onOpen } = useDisclosure();
 
   const [page, setPage] = useState(1);
-  const { data, isLoading, isFetching } = useLinks(page);
+  const { data, isLoading, isFetching, error: errorLinks } = useLinks(page);
+
+  const toast = useToast();
+
+  const handleCopyShortLink = (shortLink: string) => {
+    navigator.clipboard.writeText(`http://localhost:3333/${shortLink}`);
+
+    toast({
+      status: "success",
+      title: "Copiado",
+      description: "Short link copiado",
+      duration: 2000,
+      position: "top",
+    });
+  };
 
   const {
     mutateAsync,
@@ -56,6 +74,16 @@ export const Home = () => {
       return data;
     },
     {
+      onError: () => {
+        toast({
+          status: "error",
+          title: "Short link",
+          description: "Não foi possível criar o short link",
+          duration: 3000,
+          position: "top",
+        });
+      },
+
       onSuccess: () => {
         queryClient.invalidateQueries("myLinks");
       },
@@ -68,7 +96,6 @@ export const Home = () => {
         await mutateAsync(link);
         onOpen();
         setLink("");
-        console.log(responseData);
       } catch (err) {
         console.log(err);
       }
@@ -122,20 +149,41 @@ export const Home = () => {
         alignItems="center"
         justifyContent="center"
       >
-        <Collapse in={isOpen} animateOpacity>
-          <Flex
-            w={"100%"}
-            bg={"white"}
-            color={"purple.900"}
-            height={"10"}
-            borderRadius="base"
-            textAlign={"center"}
-            align="center"
-            justifyContent={"center"}
-            p="8"
-          >
-            {!isLoading && <Text>{responseData?.shortUrl}</Text>}
-          </Flex>
+        <Collapse in={true} animateOpacity>
+          {isLoading ? (
+            <Spinner />
+          ) : (
+            !!responseData && (
+              <Flex
+                color={"gray.100"}
+                height={"10"}
+                borderRadius="base"
+                textAlign={"center"}
+                align="center"
+                justifyContent={"center"}
+                p="8"
+                mb={8}
+              >
+                <Stack direction={"row"} alignItems="center" spacing={4}>
+                  <Text fontSize="lg" fontWeight="bold">
+                    {`http://localhost:3333/${responseData?.shortUrl}`}
+                  </Text>
+                  <Divider
+                    orientation="vertical"
+                    height={8}
+                    colorScheme={"purple"}
+                  />
+                  <IconButton
+                    colorScheme="purple"
+                    size="lg"
+                    aria-label="Copiar link curto"
+                    icon={<HiClipboardCopy fontSize={20} />}
+                    onClick={() => handleCopyShortLink(responseData?.shortUrl)}
+                  />
+                </Stack>
+              </Flex>
+            )
+          )}
         </Collapse>
 
         <Heading color={"gray.100"} fontSize="md" fontWeight={"bold"}>
@@ -157,7 +205,11 @@ export const Home = () => {
             </Thead>
 
             <Tbody>
-              {!isLoading &&
+              {isLoading ? (
+                <Text> Loading...</Text>
+              ) : errorLinks ? (
+                <Text> Erro ao carregar dados</Text>
+              ) : (
                 data?.links.map((link) => (
                   <Tr key={link.id}>
                     <Tooltip
@@ -176,12 +228,13 @@ export const Home = () => {
                     </Tooltip>
                     <Td textAlign="center">{link.visits}</Td>
                   </Tr>
-                ))}
+                ))
+              )}
             </Tbody>
           </Table>
         </TableContainer>
 
-        {!isLoading && (
+        {!isLoading && !error && (
           <Pagination
             totalCount={data!.totalCount}
             onPageChange={setPage}
