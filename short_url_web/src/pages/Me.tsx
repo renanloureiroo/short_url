@@ -6,10 +6,12 @@ import {
   TableContainer,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tooltip,
   Tr,
+  useBreakpointValue,
   useToast,
 } from "@chakra-ui/react";
 import { HiClipboardCopy } from "react-icons/hi";
@@ -58,6 +60,10 @@ export const Me = () => {
     }
   );
 
+  const isWideScreen = useBreakpointValue({
+    base: false,
+    lg: true,
+  });
   const toast = useToast();
 
   const handleDelete = async (id: string) => {
@@ -94,9 +100,13 @@ export const Me = () => {
               <Thead>
                 <Tr>
                   <Th>URL</Th>
-                  <Th textAlign="center">SHORT</Th>
                   <Th textAlign="center">VISITAS</Th>
-                  <Th textAlign="center">DATA</Th>
+                  {isWideScreen && (
+                    <>
+                      <Th textAlign="center">SHORT</Th>
+                      <Th textAlign="center">DATA</Th>
+                    </>
+                  )}
                   <Th></Th>
                   <Th></Th>
                 </Tr>
@@ -114,16 +124,23 @@ export const Me = () => {
                         openDelay={500}
                       >
                         <Td
-                          maxWidth={"500px"}
+                          maxWidth={["150px", "500px"]}
                           textOverflow="ellipsis"
                           overflowX="hidden"
                         >
                           {link.url}
                         </Td>
                       </Tooltip>
-                      <Td>{link.shortUrl}</Td>
                       <Td textAlign="center">{link.visits}</Td>
-                      <Td textAlign="center">{link.createdAt}</Td>
+                      {isWideScreen && (
+                        <>
+                          <Td>{link.shortUrl}</Td>
+                          <Td textAlign="center">
+                            <Text as={"time"}>{link.createdAt}</Text>
+                          </Td>
+                        </>
+                      )}
+
                       <Td>
                         <IconButton
                           colorScheme="purple"

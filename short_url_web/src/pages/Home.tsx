@@ -1,38 +1,7 @@
-import {
-  Box,
-  Collapse,
-  Divider,
-  Flex,
-  Heading,
-  IconButton,
-  Input,
-  InputGroup,
-  InputLeftAddon,
-  InputRightElement,
-  Spinner,
-  Stack,
-  Text,
-  useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
-import { useCallback, useState } from "react";
-import { HiClipboardCopy } from "react-icons/hi";
-import { MdAddLink } from "react-icons/md";
-import { useMutation } from "react-query";
+import { Box, Flex, Heading } from "@chakra-ui/react";
 import { CreateLink } from "../components/CreateLink";
 import { Header } from "../components/Header";
 import { ListLinks } from "../components/ListLinks";
-import { Pagination } from "../components/Pagination";
-import { Table } from "../components/Table";
-import { useLinks } from "../hooks/useLinks";
-import { api } from "../services/api";
-import { queryClient } from "../services/queryClient";
-
-interface IResponseCreateLink {
-  id: string;
-  shortUrl: string;
-  url: string;
-}
 
 export const Home = () => {
   return (
