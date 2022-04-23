@@ -92,7 +92,7 @@ export const Me = () => {
         <Box as="main" w={"100%"} maxW="1240px" p={8}>
           <TableContainer>
             <Table
-              size="lg"
+              size={isWideScreen ? "lg" : "sm"}
               color="gray.300"
               colorScheme="whiteAlpha"
               variant="simple"
@@ -100,9 +100,9 @@ export const Me = () => {
               <Thead>
                 <Tr>
                   <Th>URL</Th>
-                  <Th textAlign="center">VISITAS</Th>
                   {isWideScreen && (
                     <>
+                      <Th textAlign="center">VISITAS</Th>
                       <Th textAlign="center">SHORT</Th>
                       <Th textAlign="center">DATA</Th>
                     </>
@@ -131,9 +131,9 @@ export const Me = () => {
                           {link.url}
                         </Td>
                       </Tooltip>
-                      <Td textAlign="center">{link.visits}</Td>
                       {isWideScreen && (
                         <>
+                          <Td textAlign="center">{link.visits}</Td>
                           <Td>{link.shortUrl}</Td>
                           <Td textAlign="center">
                             <Text as={"time"}>{link.createdAt}</Text>

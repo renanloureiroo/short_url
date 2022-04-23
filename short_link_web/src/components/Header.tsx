@@ -49,6 +49,7 @@ export const Header = () => {
           bg="purple.600"
           alignItems={"center"}
           justifyContent={"center"}
+          pt={authenticated ? "0" : "50px"}
         >
           <IconButton
             position="absolute"
@@ -85,7 +86,7 @@ export const Header = () => {
                 <Avatar data-testid="avatar" size={"2xl"} name={user?.name} />
               </DrawerHeader>
             )}
-            <DrawerBody bg={"purple.700"}>
+            <DrawerBody pt={authenticated ? "0" : "16"} bg={"purple.700"}>
               <Stack direction="column" spacing={4}>
                 <Box>
                   <ActiveLink to={"/home"}>Início</ActiveLink>
