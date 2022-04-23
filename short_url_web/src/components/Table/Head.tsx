@@ -4,8 +4,8 @@ export const Head = () => {
   return (
     <Thead>
       <Tr>
-        <Th>URL</Th>
         <Th>VISITAS</Th>
+        <Th>URL</Th>
       </Tr>
     </Thead>
   );

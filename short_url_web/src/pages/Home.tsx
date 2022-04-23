@@ -36,7 +36,7 @@ interface IResponseCreateLink {
 
 export const Home = () => {
   return (
-    <Box bg="gray.800" minHeight="100vh">
+    <Box bg="gray.900" height={"100%"} minHeight="100vh">
       <Header />
       <CreateLink />
       <Flex

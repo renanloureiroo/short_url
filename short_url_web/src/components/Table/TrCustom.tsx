@@ -14,12 +14,16 @@ interface TrCustomProps {
 const BaseComponent = ({ data }: TrCustomProps) => {
   return (
     <Tr>
+      <Td textAlign="center">{data.visits}</Td>
       <Tooltip hasArrow label={data.url} aria-label="URL" openDelay={500}>
-        <Td maxW="500px" textOverflow="ellipsis" overflowX="hidden">
+        <Td
+          maxW={["200px", "200px", "500px"]}
+          textOverflow="ellipsis"
+          overflowX="hidden"
+        >
           {data.url}
         </Td>
       </Tooltip>
-      <Td textAlign="center">{data.visits}</Td>
     </Tr>
   );
 };

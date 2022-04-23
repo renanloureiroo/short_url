@@ -61,7 +61,7 @@ export const CreateLink = () => {
       w="100%"
       maxW="1240px"
       m="0 auto"
-      p="0 8"
+      px={["4", "6"]}
     >
       <InputCreateLink onCreate={handleCreateLink} />
       {isLoading ? (
