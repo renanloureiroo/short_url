@@ -1,11 +1,13 @@
 import { Request, Response } from 'express'
 import { RedirectUrlUseCase } from './RedirectUrlUseCase'
 
+import { container } from 'tsyringe'
+
 class RedirectUrlController {
   async handle(request: Request, response: Response) {
     const link = request.params.link
 
-    const redirectUrlUseCase = new RedirectUrlUseCase()
+    const redirectUrlUseCase = container.resolve(RedirectUrlUseCase)
 
     const UrlReturn = await redirectUrlUseCase.exec(link)
     if (UrlReturn) {

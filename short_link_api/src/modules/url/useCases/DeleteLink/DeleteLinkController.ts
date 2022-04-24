@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { DeleteLinkUseCase } from './DeleteLinkUseCase'
+import { container } from 'tsyringe'
 
 class DeleteLinkController {
   async handle(request: Request, response: Response): Promise<Response> {
@@ -7,7 +8,7 @@ class DeleteLinkController {
 
     console.log(id)
 
-    const deleteLinkUseCase = new DeleteLinkUseCase()
+    const deleteLinkUseCase = container.resolve(DeleteLinkUseCase)
 
     await deleteLinkUseCase.exec(id)
 

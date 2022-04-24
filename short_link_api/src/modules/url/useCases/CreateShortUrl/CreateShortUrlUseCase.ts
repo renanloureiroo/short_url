@@ -2,37 +2,38 @@ import { nanoid } from 'nanoid'
 import validator from 'validator'
 import { prisma } from '../../../../database/prisma'
 import { AppError } from '../../../../errors/AppError'
+import { injectable, inject } from 'tsyringe'
+import { IUrlRepository } from '../../../../repositories/UrlRepository/IUrlRepository'
 
 interface CreateShortUrlParams {
   url: string
-  userId?: string
+  userId?: string | null
 }
 
+@injectable()
 class CreateShotUrlUseCase {
-  async exec({ url, userId }: CreateShortUrlParams) {
+  constructor(
+    @inject('UrlRepository')
+    private urlRepository: IUrlRepository
+  ) {}
+
+  async exec({ url, userId = null }: CreateShortUrlParams) {
     const urlValid = validator.isURL(url)
     if (!urlValid) throw new AppError('Url invalid')
 
-    const urlAlreadyExits = await prisma.url.findFirst({
-      where: {
-        url,
-      },
-    })
+    const urlAlreadyExits = await this.urlRepository.findByUrl(url)
+
     if (urlAlreadyExits) {
       return urlAlreadyExits
     }
 
     const newShortUrl = nanoid(6)
 
-    if (!userId) {
-      return await prisma.url.create({
-        data: { url, shortUrl: newShortUrl },
-      })
-    } else {
-      return await prisma.url.create({
-        data: { url, shortUrl: newShortUrl, userId },
-      })
-    }
+    return await this.urlRepository.create({
+      url,
+      shortUrl: newShortUrl,
+      userId,
+    })
   }
 }
 

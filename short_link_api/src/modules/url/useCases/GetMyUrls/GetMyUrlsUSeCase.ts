@@ -1,14 +1,15 @@
-import { prisma } from '../../../../database/prisma'
+import { injectable, inject } from 'tsyringe'
+import { IUrlRepository } from '../../../../repositories/UrlRepository/IUrlRepository'
 
+@injectable()
 class GetMyUrlsUseCase {
-  async exec(userId: string) {
-    const urls = await prisma.url.findMany({
-      where: {
-        userId,
-      },
-    })
+  constructor(
+    @inject('UrlRepository')
+    private urlRepository: IUrlRepository
+  ) {}
 
-    return urls
+  async exec(userId: string) {
+    return await this.urlRepository.findByUserId(userId)
   }
 }
 

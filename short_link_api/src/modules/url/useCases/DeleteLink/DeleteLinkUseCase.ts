@@ -1,12 +1,16 @@
-import { prisma } from '../../../../database/prisma'
+import { injectable, inject } from 'tsyringe'
+import { IUrlRepository } from '../../../../repositories/UrlRepository/IUrlRepository'
 
+@injectable()
 class DeleteLinkUseCase {
+  constructor(
+    @inject('UrlRepository')
+    private urlRepository: IUrlRepository
+  ) {}
+
   async exec(id: string): Promise<void> {
-    await prisma.url.delete({
-      where: {
-        id,
-      },
-    })
+    await this.urlRepository.delete(id)
+    return
   }
 }
 

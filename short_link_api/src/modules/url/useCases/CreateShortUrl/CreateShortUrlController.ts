@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
 import { CreateShotUrlUseCase } from './CreateShortUrlUseCase'
 
+import { container } from 'tsyringe'
+
 interface IRequest {
   link: string
   userId?: string
@@ -14,7 +16,7 @@ class CreateShotUrlController {
     if (!!user) {
       userId = user.id ?? undefined
     }
-    const createShortUrlUseCase = new CreateShotUrlUseCase()
+    const createShortUrlUseCase = container.resolve(CreateShotUrlUseCase)
 
     const urlShort = await createShortUrlUseCase.exec({
       url: link,

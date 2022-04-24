@@ -1,6 +1,6 @@
 import { Url } from '@prisma/client'
 import { prisma } from '../../../database/prisma'
-import { ICreateUrlDTO } from '../../../DTOS/createUrl'
+import { ICreateUrlDTO } from '../../../DTOS/ICreateUrlDTO'
 import { IUrlRepository } from '../IUrlRepository'
 
 class UrlRepository implements IUrlRepository {
@@ -49,4 +49,20 @@ class UrlRepository implements IUrlRepository {
       },
     })
   }
+
+  async incrementeVisits(id: string): Promise<void> {
+    await prisma.url.update({
+      where: {
+        id,
+      },
+      data: {
+        visits: {
+          increment: 1,
+        },
+      },
+    })
+    return
+  }
 }
+
+export { UrlRepository }
