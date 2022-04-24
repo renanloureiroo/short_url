@@ -1,7 +1,10 @@
 import { compare } from 'bcrypt'
 import { sign } from 'jsonwebtoken'
-import { prisma } from '../../../../database/prisma'
+
 import { AppError } from '../../../../errors/AppError'
+
+import { injectable, inject } from 'tsyringe'
+import { IUserRepository } from '../../../../repositories/UserRepository/IUserRepository'
 
 interface AuthenticateParams {
   email: string
@@ -16,13 +19,15 @@ interface IResponse {
   }
 }
 
+@injectable()
 class AuthenticatedUseCase {
+  constructor(
+    @inject('UserRepository')
+    private userRepository: IUserRepository
+  ) {}
+
   async exec({ email, password }: AuthenticateParams): Promise<IResponse> {
-    const user = await prisma.user.findFirst({
-      where: {
-        email,
-      },
-    })
+    const user = await this.userRepository.findByEmail(email)
 
     if (!user) {
       throw new AppError('Email or password incorrect')

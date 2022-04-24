@@ -1,14 +1,31 @@
+import { prisma } from '../../../database/prisma'
 import { User } from '../../../entities/User'
 import { ICreateUserDTO, IUserRepository } from '../IUserRepository'
 
 class UserRepository implements IUserRepository {
-  create({ email, name, password }: ICreateUserDTO): Promise<User> {
-    throw new Error('Method not implemented.')
+  async create({ email, name, password }: ICreateUserDTO): Promise<User> {
+    return await prisma.user.create({
+      data: {
+        name,
+        email,
+        password,
+      },
+    })
   }
-  findByEmail(email: string): Promise<User> {
-    throw new Error('Method not implemented.')
+  async findByEmail(email: string): Promise<User | null> {
+    return await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    })
   }
-  findById(id: string): Promise<User> {
-    throw new Error('Method not implemented.')
+  async findById(id: string): Promise<User | null> {
+    return await prisma.user.findUnique({
+      where: {
+        id,
+      },
+    })
   }
 }
+
+export { UserRepository }

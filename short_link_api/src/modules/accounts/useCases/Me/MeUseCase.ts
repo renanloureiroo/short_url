@@ -1,12 +1,15 @@
-import { prisma } from '../../../../database/prisma'
+import { injectable, inject } from 'tsyringe'
+import { IUserRepository } from '../../../../repositories/UserRepository/IUserRepository'
 
+@injectable()
 class MeUseCase {
+  constructor(
+    @inject('UserRepository')
+    private userRepository: IUserRepository
+  ) {}
+
   async exec(id: string) {
-    const user = await prisma.user.findUnique({
-      where: {
-        id,
-      },
-    })
+    const user = await this.userRepository.findById(id)
 
     const userFormatted = {
       id: user?.id,

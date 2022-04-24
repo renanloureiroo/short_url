@@ -1,11 +1,12 @@
 import { Request, Response } from 'express'
 import { MeUseCase } from './MeUseCase'
+import { container } from 'tsyringe'
 
 class MeController {
   async handle(request: Request, response: Response) {
     const { user: userAuthenticated } = request
 
-    const meUseCase = new MeUseCase()
+    const meUseCase = container.resolve(MeUseCase)
 
     const user = await meUseCase.exec(userAuthenticated.id)
 

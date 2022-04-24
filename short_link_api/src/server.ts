@@ -1,7 +1,10 @@
+import 'reflect-metadata'
 import cors from 'cors'
 import express, { NextFunction, Request, Response } from 'express'
 import 'express-async-errors'
 import morgan from 'morgan'
+import './shared/container'
+
 import { AppError } from './errors/AppError'
 import { router } from './router'
 
