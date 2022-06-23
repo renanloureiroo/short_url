@@ -3,7 +3,7 @@ import validator from 'validator'
 import { prisma } from '../../../../database/prisma'
 import { AppError } from '../../../../errors/AppError'
 import { injectable, inject } from 'tsyringe'
-import { IUrlRepository } from '../../../../repositories/UrlRepository/IUrlRepository'
+import { IUrlRepository } from '../../repositories/UrlRepository/IUrlRepository'
 
 interface CreateShortUrlParams {
   url: string

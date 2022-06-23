@@ -1,5 +1,5 @@
 import { inject, injectable } from 'tsyringe'
-import { IUrlRepository } from '../../../../repositories/UrlRepository/IUrlRepository'
+import { IUrlRepository } from '../../repositories/UrlRepository/IUrlRepository'
 
 interface GetUrlsParams {
   page?: string

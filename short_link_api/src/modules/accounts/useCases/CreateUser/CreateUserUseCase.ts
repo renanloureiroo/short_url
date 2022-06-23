@@ -1,8 +1,8 @@
 import { injectable, inject } from 'tsyringe'
 import { hash } from 'bcrypt'
-import { prisma } from '../../../../database/prisma'
+
 import { AppError } from '../../../../errors/AppError'
-import { IUserRepository } from '../../../../repositories/UserRepository/IUserRepository'
+import { IUserRepository } from '../../repositories/UserRepository/IUserRepository'
 
 interface CreateUserParams {
   name: string

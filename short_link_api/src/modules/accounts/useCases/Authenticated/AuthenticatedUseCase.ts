@@ -4,7 +4,7 @@ import { sign } from 'jsonwebtoken'
 import { AppError } from '../../../../errors/AppError'
 
 import { injectable, inject } from 'tsyringe'
-import { IUserRepository } from '../../../../repositories/UserRepository/IUserRepository'
+import { IUserRepository } from '../../repositories/UserRepository/IUserRepository'
 
 interface AuthenticateParams {
   email: string

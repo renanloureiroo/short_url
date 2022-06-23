@@ -1,8 +1,9 @@
 import { container } from 'tsyringe'
-import { UrlRepository } from '../../repositories/UrlRepository/implementations'
-import { IUrlRepository } from '../../repositories/UrlRepository/IUrlRepository'
-import { UserRepository } from '../../repositories/UserRepository/implementations'
-import { IUserRepository } from '../../repositories/UserRepository/IUserRepository'
+
+import { UserRepository } from '../../modules/accounts/repositories/UserRepository/implementations'
+import { IUserRepository } from '../../modules/accounts/repositories/UserRepository/IUserRepository'
+import { UrlRepository } from '../../modules/url/repositories/UrlRepository/implementations'
+import { IUrlRepository } from '../../modules/url/repositories/UrlRepository/IUrlRepository'
 
 container.registerSingleton<IUserRepository>('UserRepository', UserRepository)
 

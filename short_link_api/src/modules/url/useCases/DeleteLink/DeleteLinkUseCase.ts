@@ -1,5 +1,5 @@
 import { injectable, inject } from 'tsyringe'
-import { IUrlRepository } from '../../../../repositories/UrlRepository/IUrlRepository'
+import { IUrlRepository } from '../../repositories/UrlRepository/IUrlRepository'
 
 @injectable()
 class DeleteLinkUseCase {

@@ -1,6 +1,7 @@
 import { Url } from '@prisma/client'
-import { prisma } from '../../../database/prisma'
-import { ICreateUrlDTO } from '../../../DTOS/ICreateUrlDTO'
+import { prisma } from '../../../../../database/prisma'
+import { ICreateUrlDTO } from '../../../../../DTOS/ICreateUrlDTO'
+
 import { IUrlRepository } from '../IUrlRepository'
 
 class UrlRepository implements IUrlRepository {

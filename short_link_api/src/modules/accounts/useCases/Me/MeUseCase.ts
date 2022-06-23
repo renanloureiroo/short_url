@@ -1,5 +1,5 @@
 import { injectable, inject } from 'tsyringe'
-import { IUserRepository } from '../../../../repositories/UserRepository/IUserRepository'
+import { IUserRepository } from '../../repositories/UserRepository/IUserRepository'
 
 @injectable()
 class MeUseCase {

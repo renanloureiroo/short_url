@@ -1,8 +1,9 @@
 import { prisma } from '../../../../database/prisma'
 
 import { inject, injectable } from 'tsyringe'
-import { IUrlRepository } from '../../../../repositories/UrlRepository/IUrlRepository'
+
 import { AppError } from '../../../../errors/AppError'
+import { IUrlRepository } from '../../repositories/UrlRepository/IUrlRepository'
 
 @injectable()
 class RedirectUrlUseCase {

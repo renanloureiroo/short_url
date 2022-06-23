@@ -1,5 +1,5 @@
 import { Url } from '@prisma/client'
-import { ICreateUrlDTO } from '../../DTOS/ICreateUrlDTO'
+import { ICreateUrlDTO } from '../../../../DTOS/ICreateUrlDTO'
 
 interface IUrlRepository {
   findByShortUrl(shortUrl: string): Promise<Url | null>
